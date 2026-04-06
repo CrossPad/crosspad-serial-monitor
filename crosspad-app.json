@@ -1,0 +1,17 @@
+{
+  "name": "Serial Monitor",
+  "id": "serial-monitor",
+  "version": "0.1.0",
+  "description": "UART serial monitor with baud rate selection, auto-scroll, clear",
+  "category": "tools",
+  "icon": "terminal.png",
+  "component_path": "components/crosspad-serial-monitor",
+  "platforms": ["pc"],
+  "requires": {
+    "crosspad-core": ">=0.3.0",
+    "crosspad-gui": ">=0.2.0"
+  },
+  "changelog": [
+    "0.1.0: Initial release — live UART output, input field, baud config"
+  ]
+}

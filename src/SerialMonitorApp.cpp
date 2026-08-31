@@ -359,7 +359,7 @@ void _register_SerialMonitor_app() {
     static const crosspad::AppEntry entry = {
         "Serial", LV_SYMBOL_USB,
         lv_CreateSerialMonitor, lv_DestroySerialMonitor,
-        nullptr, nullptr, nullptr, nullptr, 0
+        0
     };
     crosspad::AppRegistry::getInstance().registerApp(entry);
 }

@@ -351,6 +351,11 @@ static void lv_DestroySerialMonitor(lv_obj_t* obj)
         delete st;
     }
     printf("[SerialMonitor] App destroyed\n");
+
+    /* The destroy callback owns the root. Without this the monitor's widgets
+     * stayed on screen after the framework closed the app (return-to-launcher
+     * from the power button, or any close that does not rebuild the screen). */
+    lv_obj_delete_async(obj);
 }
 
 /* ── Registration ────────────────────────────────────────────────────── */

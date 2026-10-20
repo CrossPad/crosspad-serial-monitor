@@ -190,11 +190,16 @@ static void onBaudChanged(lv_event_t* e)
 
 /* ── App create / destroy ────────────────────────────────────────────── */
 
+// The open monitor's state (one at a time). Here rather than in the root's
+// user data: destroy gets no root when the root was deleted elsewhere.
+static SerialMonitorState* s_state = nullptr;
+
 static lv_obj_t* lv_CreateSerialMonitor(lv_obj_t* parent, App* a)
 {
     (void)a;
 
     auto* st = new SerialMonitorState();
+    s_state = st;
 
     // Root container
     st->container = lv_obj_create(parent);
@@ -208,7 +213,6 @@ static lv_obj_t* lv_CreateSerialMonitor(lv_obj_t* parent, App* a)
     lv_obj_set_flex_flow(st->container, LV_FLEX_FLOW_COLUMN);
     lv_obj_set_style_pad_row(st->container, 3, 0);
     lv_obj_remove_flag(st->container, LV_OBJ_FLAG_SCROLLABLE);
-    lv_obj_set_user_data(st->container, st);
 
     // ── Top toolbar ──
     lv_obj_t* toolbar = lv_obj_create(st->container);
@@ -343,7 +347,8 @@ static lv_obj_t* lv_CreateSerialMonitor(lv_obj_t* parent, App* a)
 
 static void lv_DestroySerialMonitor(lv_obj_t* obj)
 {
-    auto* st = static_cast<SerialMonitorState*>(lv_obj_get_user_data(obj));
+    SerialMonitorState* st = s_state;
+    s_state = nullptr;
     if (st) {
         if (st->pollTimer) {
             lv_timer_delete(st->pollTimer);
@@ -355,7 +360,7 @@ static void lv_DestroySerialMonitor(lv_obj_t* obj)
     /* The destroy callback owns the root. Without this the monitor's widgets
      * stayed on screen after the framework closed the app (return-to-launcher
      * from the power button, or any close that does not rebuild the screen). */
-    lv_obj_delete_async(obj);
+    if (obj) lv_obj_delete_async(obj);
 }
 
 /* ── Registration ────────────────────────────────────────────────────── */

@@ -153,6 +153,10 @@ static void onClearClicked(lv_event_t* e)
     if (st->outputLabel) {
         lv_label_set_text(st->outputLabel, "");
     }
+    // Back to the top: the old offset would show the next lines out of view.
+    if (st->scrollArea) {
+        lv_obj_scroll_to_y(st->scrollArea, 0, LV_ANIM_OFF);
+    }
 }
 
 /* ── Auto-scroll toggle ─────────────────────────────────────────────── */
@@ -231,6 +235,9 @@ static lv_obj_t* lv_CreateSerialMonitor(lv_obj_t* parent, App* a)
     lv_obj_set_style_text_font(st->statusLabel, &lv_font_montserrat_10, 0);
     lv_obj_set_style_text_color(st->statusLabel, lv_color_hex(0x666666), 0);
     lv_obj_set_flex_grow(st->statusLabel, 1);
+    // One line, however long the port name.
+    lv_label_set_long_mode(st->statusLabel, LV_LABEL_LONG_DOT);
+    lv_obj_set_height(st->statusLabel, lv_font_get_line_height(&lv_font_montserrat_10));
 
     // Baud rate dropdown
     st->baudDropdown = lv_dropdown_create(toolbar);
